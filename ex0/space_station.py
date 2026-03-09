@@ -14,7 +14,7 @@ class SpaceStation(BaseModel):
     is_operational: bool = True
     notes: str | None = Field(None, max_length=200)
 
-    def __str__(self):
+    def __str__(self) -> str:
         text = f'ID: {self.station_id}\n'
         text += f'Name: {self.name}\n'
         text += f'Crew: {self.crew_size} people\n'
@@ -30,9 +30,10 @@ def main(test: int) -> None:
         print('Space Station Data Validation')
         print('========================================')
         with open('generated_data/space_stations.json') as d_json:
+            print('Valid station created:')
             try:
-                l_json = SpaceStation(**json.load(d_json)[0])
-                print(l_json)
+                space_station = SpaceStation(**json.load(d_json)[0])
+                print(space_station)
             except ValidationError as error:
                 print(f"{error.errors()[0].get('loc')[0]}:",
                       error.errors()[0].get('msg'))
@@ -40,25 +41,26 @@ def main(test: int) -> None:
         print('Expected validation error:')
         with open('generated_data/space_stations.json') as d_json:
             try:
-                l_json = SpaceStation(**json.load(d_json)[1])
+                space_station = SpaceStation(**json.load(d_json)[1])
             except ValidationError as error:
                 print(f"{error.errors()[0].get('loc')[0]}:",
                       error.errors()[0].get('msg'))
     if test == 1:
         print('Space Station Data Validation')
         print('========================================')
-        with open('generated_data/space_stations.csv') as d_json:
+        with open('generated_data/space_stations.csv') as d_csv:
+            print('Valid station created:')
             try:
-                l_json = SpaceStation(**list(csv.DictReader(d_json))[0])
-                print(l_json)
+                space_station = SpaceStation(**list(csv.DictReader(d_csv))[0])
+                print(space_station)
             except ValidationError as error:
                 print(f"{error.errors()[0].get('loc')[0]}:",
                       error.errors()[0].get('msg'))
         print("========================================")
         print('Expected validation error:')
-        with open('generated_data/space_stations.csv') as d_json:
+        with open('generated_data/space_stations.csv') as d_csv:
             try:
-                l_json = SpaceStation(**list(csv.DictReader(d_json))[1])
+                space_station = SpaceStation(**list(csv.DictReader(d_csv))[1])
             except ValidationError as error:
                 print(f"{error.errors()[0].get('loc')[0]}:",
                       error.errors()[0].get('msg'))

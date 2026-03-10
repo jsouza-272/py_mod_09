@@ -21,7 +21,7 @@ class CrewMenber(BaseModel):
     years_experience: int = Field(ge=0, le=50)
     is_active: bool = True
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f'- {self.name} ({self.rank.value}) - {self.specialization}\n'
 
 

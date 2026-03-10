@@ -27,15 +27,15 @@ class AlienContact(BaseModel):
     def validation(self) -> 'AlienContact':
         if self.contact_id[:2] != 'AC':
             raise ValueError("Contact ID must start with 'AC'")
-        elif (self.contact_type is ContactType.PHYSICAL
-              and not self.is_verified):
+        if (self.contact_type is ContactType.PHYSICAL
+                and not self.is_verified):
             raise ValueError('Physical contact reports must be verified')
-        elif (self.contact_type is ContactType.TELEPATHIC
-              and self.witness_count < 3):
+        if (self.contact_type is ContactType.TELEPATHIC
+                and self.witness_count < 3):
             raise ValueError('Telepathic contact requires '
                              'at least 3 witnesses')
-        elif (self.signal_strength > 7.0
-              and self.message_received is None):
+        if (self.signal_strength > 7.0
+                and self.message_received is None):
             raise ValueError('Strong signals (> 7.0) must'
                              ' include a received message')
         return self
@@ -47,8 +47,8 @@ class AlienContact(BaseModel):
         text += f'Signal: {self.signal_strength:.1f}/10\n'
         text += f'Duration: {self.duration_minutes} minutes\n'
         text += f'Witnesses: {self.witness_count}\n'
-        text += f'{"" if self.message_received is None
-                   else f"Message: {self.message_received}\n"}'
+        text += ("" if self.message_received is None
+                 else f"Message: {self.message_received}\n")
         return text
 
 
@@ -59,16 +59,16 @@ def main(test: int) -> None:
         with open('generated_data/alien_contacts.json') as d_json:
             print('Valid contact report:')
             try:
-                contact = AlienContact(**json.load(d_json)[0])
+                contact = AlienContact(**json.load(d_json)[1])
                 print(contact)
             except ValidationError as error:
                 print(error.errors()[0].get('msg').
                       removeprefix('Value error,').strip())
         print('========================================')
-        with open('generated_data/alien_contacts.json') as d_json:
+        with open('generated_data/invalid_contacts.json') as d_json:
             print('Expected validation error:')
             try:
-                contact = AlienContact(**json.load(d_json)[1])
+                contact = AlienContact(**json.load(d_json)[0])
                 print(contact)
             except ValidationError as error:
                 print(error.errors()[0].get('msg').
@@ -88,7 +88,7 @@ def main(test: int) -> None:
         with open('generated_data/alien_contacts.csv') as d_csv:
             print('Expected validation error:')
             try:
-                contact = AlienContact(**list(csv.DictReader(d_csv))[1])
+                contact = AlienContact(**list(csv.DictReader(d_csv))[0])
                 print(contact)
             except ValidationError as error:
                 print(error.errors()[0].get('msg').
@@ -96,4 +96,4 @@ def main(test: int) -> None:
 
 
 if __name__ == '__main__':
-    main(1)
+    main(0)

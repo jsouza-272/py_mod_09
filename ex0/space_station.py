@@ -20,8 +20,8 @@ class SpaceStation(BaseModel):
         text += f'Crew: {self.crew_size} people\n'
         text += f'Power: {self.power_level:.1f}%\n'
         text += f'Oxygen: {self.oxygen_level:.1f}\n'
-        text += f'Status: {'Operational\n' if self.is_operational
-                           else 'No Operational\n'}'
+        text += f'Status: \
+{"Operational" if self.is_operational else "No Operational"}\n'
         return text
 
 
@@ -39,9 +39,9 @@ def main(test: int) -> None:
                       error.errors()[0].get('msg'))
         print("========================================")
         print('Expected validation error:')
-        with open('generated_data/space_stations.json') as d_json:
+        with open('generated_data/invalid_stations.json') as d_json:
             try:
-                space_station = SpaceStation(**json.load(d_json)[1])
+                space_station = SpaceStation(**json.load(d_json)[0])
             except ValidationError as error:
                 print(f"{error.errors()[0].get('loc')[0]}:",
                       error.errors()[0].get('msg'))
@@ -58,7 +58,7 @@ def main(test: int) -> None:
                       error.errors()[0].get('msg'))
         print("========================================")
         print('Expected validation error:')
-        with open('generated_data/space_stations.csv') as d_csv:
+        with open('generated_data/invalid_stations.csv') as d_csv:
             try:
                 space_station = SpaceStation(**list(csv.DictReader(d_csv))[1])
             except ValidationError as error:
